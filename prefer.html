@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Hotel Management</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            Menu
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="showProfile()">Profile</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="showFeedback()">Feedback</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><button class="dropdown-item" onclick="logout()">Logout</button></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="hotelCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#hotelCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#hotelCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#hotelCarousel" data-bs-slide-to="2"></button>
+            <button type="button" data-bs-target="#hotelCarousel" data-bs-slide-to="3"></button>
+            <button type="button" data-bs-target="#hotelCarousel" data-bs-slide-to="4"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="C:\Users\Admin\Pictures\WhatsApp Image 2025-02-28 at 16.37.33_c6bdf482.jpg" class="d-block w-100" alt="Luxury Hotel Lobby">
+            </div>
+            <div class="carousel-item">
+                <img src="C:\Users\Admin\Pictures\WhatsApp Image 2025-02-28 at 16.35.10_b68aaae0.jpg" class="d-block w-100" alt="Deluxe Room">
+            </div>
+            <div class="carousel-item">
+                <img src= "C:\Users\Admin\Pictures\WhatsApp Image 2025-02-28 at 16.34.27_c9261514.jpg" class="d-block w-100" alt="Swimming Pool">
+            </div>
+            <div class="carousel-item">
+                <img src="C:\Users\Admin\Pictures\WhatsApp Image 2025-02-28 at 16.51.00_01156153.jpg" class="d-block w-100" alt="Event hall">
+            </div>
+            <div class="carousel-item">
+                <img src="C:\Users\Admin\Pictures\WhatsApp Image 2025-02-28 at 16.33.56_9a8989b6.jpg" class="d-block w-100" alt="Spa Session">
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <h2 aria-hidden="true" style="text-align: center;">Welcome, <span id="guest-name">Guest</span>!</h2>
+                <p class="welcome-message">
+            We're delighted to host you again! Let's make your stay even better by personalizing your preferences.
+        </p>
+
+        <form id="preferences-form">
+            <input type="hidden" id="guestId" name="guestId" value="">
+            <input type="hidden" id="roomNumber" name="roomNumber" value="">
+            
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Choose Your Bed Type</h5>
+                    <select class="form-select" id="bedType" name="bedType">
+                        <option value="Single">Single Bed</option>
+                        <option value="Double" selected>Double Bed</option>
+                        <option value="King">King Size Bed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Select Room Temperature</h5>
+                    <select class="form-select" id="roomTemperature" name="roomTemperature">
+                        <option value="18">18°C - Cool</option>
+                        <option value="22" selected>22°C - Comfortable</option>
+                        <option value="26">26°C - Warm</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Cuisine Preferences</h5>
+                    <select class="form-select" id="foodPreference" name="foodPreference">
+                        <option value="Indian">Indian</option>
+                        <option value="Chinese" selected>Chinese</option>
+                        <option value="Mexican">Mexican</option>
+                        <option value="French">French</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Japanese">Japanese</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Personalized Deals Based on Stay History</h5>
+                    <ul id="deals-list" class="list-group">
+                        <li class="list-group-item" data-deal="10% Discount on Next Stay">
+                            <i class="fas fa-percent"></i> 10% Discount on Next Stay
+                        </li>
+                        <li class="list-group-item" data-deal="Complimentary Breakfast">
+                            <i class="fas fa-coffee"></i> Complimentary Breakfast
+                        </li>
+                        <li class="list-group-item" data-deal="5% Spa Upgrade">
+                            <i class="fas fa-spa"></i> 5% Spa Upgrade
+                        </li>
+                    </ul>
+                    <p id="dealMessage" class="mt-2 text-success"></p>
+                    <input type="hidden" id="selectedDeal" name="selectedDeal" value="">
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Spa Session Offer</h5>
+                    <p>Do you always book a spa session? If yes, enjoy a pre-booking discount!</p>
+                    <select class="form-select" id="spaSession" name="spaSession">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Special Requests</h5>
+                    <textarea class="form-control" id="specialRequests" name="specialRequests" rows="3" placeholder="Any special requests for your stay?"></textarea>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Reward Coins</h5>
+                    <p>You earn 50 points per stay. Redeem points for discounts or free upgrades!</p>
+                    <h4>Your Reward Coins: <span id="reward-points">200</span></h4>
+                    <input type="hidden" id="rewardPoints" name="rewardPoints" value="200">
+                    <button type="button" class="btn btn-primary" onclick="redeemPoints()">Redeem Points</button>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <button type="button" class="btn btn-success btn-submit" onclick="handleSubmit()">Submit Preferences</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set random guest ID and room number for demo purposes
+            document.getElementById('guestId').value = 'G' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('roomNumber').value = Math.floor(100 + Math.random() * 400);
+            
+            // Set guest name from URL parameter or use default
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestName = urlParams.get('name') || 'Guest';
+            document.getElementById('guest-name').textContent = guestName;
+            
+            // Deal selection functionality
+            const dealsList = document.getElementById('deals-list');
+            const listItems = dealsList.querySelectorAll('.list-group-item');
+            const dealMessage = document.getElementById('dealMessage');
+            const selectedDealInput = document.getElementById('selectedDeal');
+
+            listItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    listItems.forEach(li => li.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const selectedDeal = this.getAttribute('data-deal');
+                    selectedDealInput.value = selectedDeal;
+                    dealMessage.textContent = `You selected: ${selectedDeal}`;
+                });
+            });
+        });
+
+        function showProfile() {
+            alert('Profile functionality will be implemented soon.');
+        }
+
+        function showFeedback() {
+            alert('Feedback functionality will be implemented soon.');
+        }
+
+        function logout() {
+            alert('Logging out...');
+            window.location.href = 'login.html';
+        }
+
+        function redeemPoints() {
+            alert('Points redemption will be implemented soon.');
+        }
+
+        function handleSubmit() {
+            // Get all form data
+            const form = document.getElementById('preferences-form');
+            const formData = new FormData(form);
+            
+            // Convert FormData to JSON object
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+            
+            // Add timestamp
+            jsonData.timestamp = new Date().toISOString();
+            
+            // Send data to backend API
+            fetch('http://your-api-endpoint/guest-preferences', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                alert('Your preferences have been saved successfully!');
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // For demo purposes, simulate successful submission even if API fails
+                alert('Your preferences have been saved successfully! (Demo mode)');
+                
+                // Save to localStorage for demo
+                localStorage.setItem('guestPreferences', JSON.stringify(jsonData));
+            });
+        }
+    </script>
+</body>
+</html>

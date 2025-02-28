@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Sign Up</title>
+    <style>
+        /* General Page Style */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Open Sans", sans-serif;
+            background-color: #353535;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .signup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 30vw;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+
+        .form-box {
+            text-align: center;
+            width: 100%;
+        }
+
+        .form-box h1 {
+            font-size: 32px;
+            color: #353535;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-box input {
+            width: 100%;
+            padding: 10px 5px;
+            margin: 10px 0;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .form-box input:focus {
+            border-color: #ae9548;
+            box-shadow: 0 0 5px #ae9548;
+        }
+
+        .primary-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ffffff;
+            background-color: #ae9548;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .primary-btn:hover {
+            background-color: #9a7c41;
+        }
+
+        .signup-link {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #353535;
+        }
+
+        .signup-link a {
+            color: #ae9548;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .signup-container {
+                padding: 20px;
+            }
+
+            .form-box h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="form-box">
+            <h1>Create an Account</h1>
+            <form id="signupForm">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                <button type="submit" class="primary-btn">Sign Up</button>
+                <p class="signup-link">Already have an account? <a href="login.html">Login</a></p>
+                <p id="error-message" style="color: red; display: none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const errorMessage = document.getElementById("error-message");
+
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "Passwords do not match!";
+                errorMessage.style.display = "block";
+                setTimeout(() => { errorMessage.style.display = "none"; }, 3000);
+                return;
+            }
+
+            // Backend API URL
+            const apiUrl = "https://your-backend-url.com/api/register"; // Replace with your actual backend URL
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Signup Successful! Redirecting to login...");
+                    window.location.href = "login.html"; // Redirect to login page
+                } else {
+                    throw new Error(data.message || "Signup failed.");
+                }
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = "block";
+                setTimeout(() => { errorMessage.style.display = "none"; }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
+

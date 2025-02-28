@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hack-A-Stay Receptionist Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS Bundle (Required for Dropdown) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .dashboard-container {
+            padding: 2rem;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .table th {
+            font-weight: 600;
+            border: #2C3E50;
+        }
+        .check-time {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .notify-btn {
+            transition: all 0.3s;
+            color: #FFFFFF;
+            background-color: #FFD700;
+        }
+        .notify-btn:hover {
+            transform: scale(1.05);
+        }
+        .tab-button {
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .tab-button:hover {
+            background-color: #FFD700;
+            color: #2C3E50;
+        }
+        .tab-button.active {
+            background-color: #FFD700;
+            color: #2C3E50;
+        }
+        .tab-content {
+            margin-top: 20px;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Hack-A-Stay</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user"></i> Menu
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="file:///C:/Users/sidde/Downloads/hack-a-stay/hack-a-stay/index.html">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Receptionist Dashboard -->
+    <div class="container dashboard-container">
+        <h2 class="text-center">Receptionist Dashboard</h2>
+        
+        <!-- Tab Buttons -->
+        <div class="d-flex justify-content-center mt-4">
+            <button class="tab-button active" data-target="check-in-details">Guest Check-in Details</button>
+            <button class="tab-button" data-target="guest-preferences">Guest Preferences</button>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Check-in Details Tab -->
+            <div class="tab-pane active" id="check-in-details">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="guestTable">
+                        <thead>
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>Name</th>
+                                <th>Check-in</th>
+                                <th>Check-in Time</th>
+                                <th>Check-out</th>
+                                <th>Check-out Time</th>
+                                <th>Notify</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-body">
+                            <!-- Data will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Guest Preferences Tab -->
+            <div class="tab-pane" id="guest-preferences">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>Name</th>
+                                <th>Room Type</th>
+                                <th>Special Requests</th>
+                                <th>Dietary Restrictions</th>
+                                <th>VIP Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preferences-body">
+                            <!-- Preferences data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CHECK_IN_API_URL = "http://your-backend-api.com/api/customers";
+        const PREFERENCES_API_URL = "http://your-backend-api.com/api/preferences";
+
+        // Tab switching functionality
+        document.addEventListener("DOMContentLoaded", function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons and content
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    this.classList.add('active');
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    // Load data if needed
+                    if (targetId === 'guest-preferences' && document.getElementById('preferences-body').children.length === 0) {
+                        loadGuestPreferences();
+                    }
+                });
+            });
+
+            // Load check-in data initially
+            loadCheckInData();
+        });
+
+        function loadCheckInData() {
+            fetch(CHECK_IN_API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(customer => updateCustomerTable(customer));
+                })
+                .catch(error => console.error("Error fetching customers:", error));
+        }
+
+        function loadGuestPreferences() {
+            fetch(PREFERENCES_API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(preference => updatePreferencesTable(preference));
+                })
+                .catch(error => {
+                    console.error("Error fetching preferences:", error);
+                    // Add some sample data for demonstration purposes
+                    const samplePreferences = [
+                        {id: "G001", name: "John Smith", roomType: "Deluxe", specialRequests: "Extra pillows", dietaryRestrictions: "None", vipStatus: "Gold"},
+                        {id: "G002", name: "Emma Johnson", roomType: "Suite", specialRequests: "Late checkout", dietaryRestrictions: "Vegetarian", vipStatus: "Platinum"},
+                        {id: "G003", name: "Michael Brown", roomType: "Standard", specialRequests: "None", dietaryRestrictions: "Gluten-free", vipStatus: "None"}
+                    ];
+                    samplePreferences.forEach(preference => updatePreferencesTable(preference));
+                });
+        }
+
+        function updateCustomerTable(customer) {
+            const tableBody = document.getElementById('dashboard-body');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${customer.id}</td>
+                <td>${customer.name}</td>
+                <td><input type="checkbox" class="check-in" onclick="updateTime(this, '${customer.id}-checkin-time')"></td>
+                <td class="check-time" id="${customer.id}-checkin-time">${customer.checkin_time || '--'}</td>
+                <td><input type="checkbox" class="check-out" onclick="updateTime(this, '${customer.id}-checkout-time')"></td>
+                <td class="check-time" id="${customer.id}-checkout-time">${customer.checkout_time || '--'}</td>
+                <td><button class="btn notify-btn" onclick="notifyHousekeeping('${customer.id}', '${customer.name}')">Notify</button></td>
+            `;
+            tableBody.appendChild(newRow);
+        }
+
+        function updatePreferencesTable(preference) {
+            const tableBody = document.getElementById('preferences-body');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${preference.id}</td>
+                <td>${preference.name}</td>
+                <td>${preference.roomType}</td>
+                <td>${preference.specialRequests}</td>
+                <td>${preference.dietaryRestrictions}</td>
+                <td>${preference.vipStatus}</td>
+            `;
+            tableBody.appendChild(newRow);
+        }
+
+        function updateTime(checkbox, timeFieldId) {
+            const timeField = document.getElementById(timeFieldId);
+            const now = new Date().toLocaleString();
+            timeField.textContent = checkbox.checked ? now : "--";
+        }
+
+        function notifyHousekeeping(customerId, customerName) {
+            fetch(`${CHECK_IN_API_URL}/${customerId}/notify`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(`Housekeeping notified for ${customerName}`))
+                .catch(error => console.error("Error notifying housekeeping:", error));
+        }
+    </script>
+</body>
+</html>
