@@ -1,8 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
-# User Model (Guests & Staff)
-class User(AbstractUser):  # Extending Django's built-in User model
+class User(AbstractUser):
     ROLE_CHOICES = [
         ('guest', 'Guest'),
         ('manager', 'Manager'),
@@ -10,10 +9,16 @@ class User(AbstractUser):  # Extending Django's built-in User model
         ('housekeeping', 'Housekeeping'),
         ('admin', 'Admin'),
     ]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='guest')
+
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     phone = models.CharField(max_length=15, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Add related_name to avoid conflicts
+    groups = models.ManyToManyField(Group, related_name="custom_user_groups", blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True)
+
 
 # Staff Model (Only for employees)
 class Staff(models.Model):
